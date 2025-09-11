@@ -18,7 +18,7 @@ These rules are short and simple. Follow them.
 
 Contacts:
 - Organizer: Aryan Patel || +91 95104 72483 || aryan12patel@gmail.com
-- Team lead: Diya Vyas || +91 94286 97791 || diya.vyas@gmail.com
+- Team lead: Diya Vyas || +91 94286 97791 || vyas.diya@gmail.com
 
  - Prefer `Calling` or `Discord Messages` - Not everyone reads emails.
 
