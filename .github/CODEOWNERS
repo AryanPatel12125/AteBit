@@ -1,0 +1,9 @@
+# CODEOWNERS file for AteBit repository
+# This file defines code ownership for the entire repository
+# AryanPatel12125 is the primary code owner for all files
+
+# Global rule - AryanPatel12125 owns all files in the repository
+* @AryanPatel12125
+
+# This ensures AryanPatel12125 has full access and is automatically
+# requested for review on all pull requests
