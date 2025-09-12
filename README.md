@@ -2,19 +2,20 @@
 
 Short description: This repository is used for the AteBit hackathon project. Keep the repo clean and follow the rules in `instructions.md`.
 
-Run the updater script to refresh dynamic project information (commit count, last author, contributors):
+This is the AteBit hackathon project repository.
 
-PowerShell (Windows):
+Quick notes:
 
-    powershell -ExecutionPolicy Bypass -File .\scripts\update_readme.ps1
+- Read `instructions.md` before you start. It has the rules.
+- Make a branch for your work: `feature/short-name` or `fix/short-name`.
+- Use Pull Requests to merge into `main` and ask for a review.
+- Do not commit secrets or change `.gitignore`.
 
-Dynamic project information (automatically updated):
+Add your name to the Contributors section below when you join:
 
-<!-- DYNAMIC_START -->
-- Commit count: (run the updater script to populate this)
-- Current branch: (run the updater script to populate this)
-- Last commit by: (run the updater script to populate this)
-- Registered contributors: (run the updater script to populate this)
-<!-- DYNAMIC_END -->
-
-See `instructions.md` for repository rules and emergency procedures.
+Contributors (Alphabetical order):
+- Aryan Patel
+- Dhruv Mistri
+- Dhiraj Patil
+- Diya Vyas
+- Heli Parmar
