@@ -1,0 +1,52 @@
+services:
+  # Django Backend Service
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - backend_static:/app/staticfiles
+    environment:
+      - DEBUG=True
+      - DJANGO_SECRET_KEY=django-insecure-docker-dev-key-change-in-production
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,backend
+    command: python manage.py runserver 0.0.0.0:8000
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Next.js Frontend Service  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    command: npm run dev
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  backend_static:
+
+networks:
+  app-network:
+    driver: bridge
+
+# TODO: Add database service when needed
+# TODO: Add Redis service for caching/sessions
+# TODO: Add environment file loading
+# TODO: Add production overrides

@@ -1,0 +1,287 @@
+Create a MINIMAL boilerplate starter template for a hackathon project with ZERO actual development done. This should be pure infrastructure setup only.
+
+PROJECT REQUIREMENTS:
+- Legal document AI platform (concept only - no implementation)
+- Complete version consistency across team
+- Docker-ready environment
+- No actual features implemented
+- Just basic "Hello World" responses
+- Empty placeholder files for future development
+
+TECH STACK (Versions Only):
+Backend:
+- Django 5.2.6 with Django REST Framework 3.16
+- Python 3.11.6
+- Basic requirements.txt with essential packages only
+
+Frontend:
+- Next.js 15.5.3 with React 18.2.0
+- Node.js 18.18.0
+- Minimal package.json
+
+Infrastructure:
+- Docker and docker-compose
+- Basic environment setup
+
+CREATE MINIMAL DIRECTORY STRUCTURE:
+
+hackathon-project/
+├── backend/
+│   ├── Dockerfile (minimal Python 3.11.6 setup)
+│   ├── requirements.txt (ONLY Django, DRF, CORS - no AI libraries)
+│   ├── manage.py (standard Django)
+│   ├── hackathon_project/
+│   │   ├── __init__.py (empty)
+│   │   ├── settings.py (minimal Django settings, no Firebase/AI config)
+│   │   ├── urls.py (only health check endpoint returning "Backend running")
+│   │   └── wsgi.py (standard)
+│   └── apps/
+│       └── __init__.py (empty)
+├── frontend/
+│   ├── Dockerfile (minimal Node.js 18.18.0 setup)
+│   ├── package.json (ONLY Next.js, React - no Firebase/AI libraries)
+│   ├── next.config.js (basic Next.js config)
+│   └── pages/
+│       └── index.js (simple page showing "Frontend running" + backend status)
+├── docker-compose.yml (basic backend + frontend services only)
+├── .env.example (empty placeholders with comments)
+├── .gitignore (comprehensive but standard)
+└── README.md (setup instructions only)
+
+SPECIFIC REQUIREMENTS:
+
+1. Django settings.py should include:
+   - Basic Django settings only
+   - CORS for localhost:3000
+   - SQLite database (default)
+   - NO Firebase configuration
+   - NO AI service configuration
+   - Standard REST framework setup
+
+2. Django urls.py should have:
+   - Single health check endpoint: {"status": "healthy", "message": "Backend running"}
+   - Admin URL
+   - Nothing else
+
+3. Next.js index.js should show:
+   - "Frontend is running" message
+   - Simple fetch to backend health check
+   - System status display (Frontend: OK, Backend: OK/Failed)
+   - No other functionality
+
+4. requirements.txt should ONLY include:
+   - Django==5.2.6
+   - djangorestframework==3.16
+   - django-cors-headers==4.3.1
+   - NO Firebase, Google Cloud, or AI libraries
+
+5. package.json should ONLY include:
+   - next==15.5.3
+   - react==18.2.0
+   - react-dom==18.2.0
+   - NO Firebase or additional libraries
+
+6. Docker files must:
+   - Use exact Python 3.11.6 and Node.js 18.18.0
+   - Minimal system dependencies
+   - Basic setup only
+
+7. docker-compose.yml should include:
+   - Backend service (port 8000)
+   - Frontend service (port 3000)
+   - NO database services
+   - NO Redis or other services
+   - Basic volume mounting
+
+8. .env.example should have:
+   - Empty placeholders with comments like:
+   # Django Settings
+   DJANGO_SECRET_KEY=your-secret-key-here
+   DEBUG=True
+   
+   # Firebase Configuration (to be added later)
+   # FIREBASE_PROJECT_ID=
+   
+   # Google Cloud AI Configuration (to be added later)
+   # GOOGLE_CLOUD_PROJECT=
+
+9. All Python files should be:
+   - Minimal working code
+   - Extensive TODO comments for future development
+   - No actual business logic
+   - No model definitions beyond basic Django setup
+
+10. All JavaScript files should be:
+    - Basic functional components
+    - No complex logic
+    - TODO comments for future features
+    - Basic styling only
+
+IMPORTANT CONSTRAINTS:
+- NO AI integration code whatsoever
+- NO Firebase configuration (just placeholders)
+- NO actual models or database schema
+- NO file upload functionality
+- NO authentication implementation
+- NO business logic
+- ONLY version consistency and basic connectivity
+- Must run successfully with docker-compose up --build
+- Backend health check must return JSON
+- Frontend must successfully call backend health check
+- Everything else should be empty placeholders with TODO comments
+
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
+
+### EXAMPLE OF WHAT FILES SHOULD LOOK LIKE
+
+#### `backend/apps/documents/models.py`
+
+```python
+from django.db import models
+
+# TODO: Add Document model for legal document storage
+# TODO: Add Firebase path fields
+# TODO: Add AI analysis result fields
+# TODO: Add user association
+# TODO: Add document type choices
+# TODO: Add status tracking fields
+
+# Placeholder – no actual models implemented yet
+```
+
+
+#### `backend/apps/documents/views.py`
+
+```python
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+# TODO: Implement document upload endpoint
+# TODO: Add AI analysis trigger
+# TODO: Add Firebase integration
+# TODO: Add document CRUD operations
+# TODO: Add user authentication
+
+@api_view(['GET'])
+def placeholder_view(request):
+    return Response({
+        'message': 'Document API endpoints – Coming Soon',
+        'todo': [
+            'Upload documents',
+            'AI analysis',
+            'Firebase storage',
+            'User authentication'
+        ]
+    })
+```
+
+
+#### `frontend/components/DocumentViewer.js`
+
+```javascript
+// TODO: Implement document viewer component
+// TODO: Add PDF/DOCX rendering
+// TODO: Add annotation features
+// TODO: Add AI analysis display
+// TODO: Add real-time collaboration
+
+export default function DocumentViewer() {
+  return (
+    <div>
+      <h2>Document Viewer – Coming Soon</h2>
+      <p>Features to implement:</p>
+      <ul>
+        <li>PDF/DOCX display</li>
+        <li>AI clause highlighting</li>
+        <li>Real-time annotations</li>
+        <li>Document comparison</li>
+      </ul>
+    </div>
+  );
+}
+```
+
+
+#### `frontend/services/firebase.js`
+
+```javascript
+// TODO: Initialize Firebase app
+// TODO: Configure Firestore
+// TODO: Configure Firebase Storage
+// TODO: Configure Firebase Auth
+// TODO: Add error handling
+
+// Placeholder configuration
+const firebaseConfig = {
+  // TODO: Add actual Firebase config from team lead
+};
+
+// TODO: Export initialized Firebase services
+console.log('Firebase integration – Coming Soon');
+```
+
+
+#### `backend/apps/ai_services/document_analyzer.py`
+
+```python
+# TODO: Integrate with Google Vertex AI
+# TODO: Add document text extraction
+# TODO: Add clause identification
+# TODO: Add risk analysis
+# TODO: Add plain-language translation
+# TODO: Add Q&A functionality
+
+class DocumentAnalyzer:
+    """
+    Placeholder for AI document analysis service.
+
+    TODO Features:
+    - Extract text from PDF/DOCX
+    - Identify legal clauses
+    - Assess document risks
+    - Generate plain-language summaries
+    - Enable document Q&A
+    """
+    def __init__(self):
+        # TODO: Initialize Vertex AI client
+        pass
+
+    def analyze_document(self, document_path):
+        # TODO: Implement actual analysis
+        return {
+            'status': 'placeholder',
+            'message': 'AI analysis not implemented yet'
+        }
+```
+
+
+#### `frontend/pages/upload.js`
+
+```javascript
+// TODO: Implement drag-drop file upload
+// TODO: Add file-type validation
+// TODO: Add progress indicators
+// TODO: Add Firebase Storage integration
+// TODO: Add error handling
+
+export default function Upload() {
+  return (
+    <div>
+      <h1>Document Upload – Coming Soon</h1>
+      <div
+        style={{
+          border: '2px dashed #ccc',
+          padding: '50px',
+          textAlign: 'center'
+        }}
+      >
+        <p>Drag-and-Drop Upload Interface</p>
+        <p>TODO: Implement file upload functionality</p>
+      </div>
+    </div>
+  );
+}
+```
+
+
+The goal is: Complete version consistency + working Docker setup + zero development progress = perfect team starting point.
