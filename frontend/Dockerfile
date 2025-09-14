@@ -7,17 +7,14 @@ WORKDIR /app
 # Copy package files (both package.json and package-lock.json)
 COPY package*.json ./
 
-# Install exact dependencies from lock file
-RUN npm ci --omit=dev
+# Install ALL dependencies (including dev dependencies for hot reload)
+RUN npm ci
 
 # Copy project files
 COPY . .
 
-# Build the application
-RUN npm run build
-
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"]
+# Start development server with hot reload (overridden by docker-compose)
+CMD ["npm", "run", "dev"]

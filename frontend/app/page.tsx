@@ -14,6 +14,8 @@ interface SystemStatus {
   lastChecked: Date | null;
 }
 
+//checking file 2
+
 export default function Home() {
   const [systemStatus, setSystemStatus] = useState<SystemStatus>({
     backend: 'checking',
@@ -77,8 +79,8 @@ export default function Home() {
   return (
     <div style={{ padding: '40px', fontFamily: 'Arial, sans-serif', maxWidth: '1200px', margin: '0 auto' }}>
       <header style={{ borderBottom: '1px solid #eee', paddingBottom: '20px', marginBottom: '30px' }}>
-        <h1 style={{ color: '#333', margin: '0 0 10px 0' }}>AteBit Legal Document Platform</h1>
-        <p style={{ color: '#666', margin: 0 }}>🚀 Hackathon Boilerplate - Production-Ready Infrastructure</p>
+        <h1 style={{ color: '#333', margin: '0 0 10px 0' }}>AteBit Legal Document Platform � TURBO HOT RELOAD WORKING!</h1>
+                <p style={{ color: '#666', margin: '0', fontSize: '14px' }}>🚀 Turbo Hot Reload is WORKING! Change detected automatically! 🎉</p>
       </header>
       
       <section style={{ 

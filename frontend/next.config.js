@@ -8,9 +8,21 @@ const nextConfig = {
     domains: ['localhost'],
   },
   
-  // Enable experimental features if needed
+  // Experimental features - turbo disabled for hot reload in Docker
   experimental: {
-    // Add any experimental features here
+    // Keep turbo disabled to use webpack hot reload
+  },
+  
+  // Hot reload configuration for Docker - use webpack with polling
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+        ignored: /node_modules/,
+      }
+    }
+    return config
   },
 };
 

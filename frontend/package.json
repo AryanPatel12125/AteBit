@@ -8,9 +8,10 @@
     "npm": "9.8.1"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 0.0.0.0 --port 3000",
+    "dev:turbo": "next dev --turbo --hostname 0.0.0.0 --port 3000", 
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 0.0.0.0 --port 3000",
     "lint": "next lint"
   },
   "dependencies": {
