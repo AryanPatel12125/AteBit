@@ -1,48 +1,74 @@
 services:
-  # Django Backend Service
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
-      - backend_static:/app/staticfiles
+    # remove bind mount; watch will sync
+    volumes: []   # keep empty to avoid accidental host mounts
     environment:
       - DEBUG=True
       - DJANGO_SECRET_KEY=django-insecure-docker-dev-key-change-in-production
       - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,backend
     command: python manage.py runserver 0.0.0.0:8000
     restart: unless-stopped
-    networks:
-      - app-network
+    networks: [app-network]
 
-  # Next.js Frontend Service  
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app
+          ignore:
+            - __pycache__/
+            - .pytest_cache/
+            - .venv/
+            - venv/
+            - staticfiles/
+            - media/
+        - action: rebuild
+          path: ./backend/requirements.txt
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
-      - /app/.git
+    # remove bind mounts; watch will sync
+    volumes: []   # keep empty
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:8000
-      - WATCHPACK_POLLING=true
-      - CHOKIDAR_USEPOLLING=true
+      # keep these if you’re not using watch; with watch, they’re usually unnecessary
+      # - WATCHPACK_POLLING=true
+      # - CHOKIDAR_USEPOLLING=true
     command: npm run dev
     restart: unless-stopped
-    depends_on:
-      - backend
-    networks:
-      - app-network
+    depends_on: [backend]
+    networks: [app-network]
     stdin_open: true
     tty: true
+
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
+            - .git/
+        - action: rebuild
+          path: ./frontend/package.json
+        - action: rebuild
+          path: ./frontend/package-lock.json
+        # yarn/pnpm users:
+        # - action: rebuild
+        #   path: ./frontend/yarn.lock
+        # - action: rebuild
+        #   path: ./frontend/pnpm-lock.yaml
 
 volumes:
   backend_static:
@@ -50,8 +76,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-
-# TODO: Add database service when needed
-# TODO: Add Redis service for caching/sessions
-# TODO: Add environment file loading
-# TODO: Add production overrides

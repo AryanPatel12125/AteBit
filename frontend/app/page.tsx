@@ -14,8 +14,6 @@ interface SystemStatus {
   lastChecked: Date | null;
 }
 
-//checking file 2
-
 export default function Home() {
   const [systemStatus, setSystemStatus] = useState<SystemStatus>({
     backend: 'checking',
@@ -93,7 +91,7 @@ export default function Home() {
         <h2 style={{ color: '#333', marginTop: 0 }}>System Status</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '15px' }}>
           <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '6px', border: '1px solid #e9ecef' }}>
-            <strong>Frontend:</strong> ✅ Running (Next.js 14.2.15, React 18.3.1, TypeScript 5.6.3)
+            <strong>Frontend: </strong> ✅ Running (Next.js 14.2.15, React 18.3.1, TypeScript 5.6.3)
           </div>
           <div style={{ 
             padding: '15px', 
