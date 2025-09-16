@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     
-    # Local Apps (Placeholder - TODO: Uncomment when apps are created)
-    # "apps.documents",
-    # "apps.ai_services",
+    # Local Apps
+    "apps.documents",
+    "apps.ai_services",
+    "apps.authz",  # Firebase authentication
 ]
 
 MIDDLEWARE = [
@@ -137,11 +138,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'apps.authz.firebase_auth.FirebaseAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # TODO: Add proper authentication
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
@@ -167,22 +176,11 @@ CORS_ALLOWED_HEADERS = [
     'x-requested-with',
 ]
 
-# TODO: Firebase Configuration (Placeholder - not implemented yet)
-# FIREBASE_CONFIG = {
-#     'type': config('FIREBASE_TYPE', default=''),
-#     'project_id': config('FIREBASE_PROJECT_ID', default=''),
-#     'private_key_id': config('FIREBASE_PRIVATE_KEY_ID', default=''),
-#     'private_key': config('FIREBASE_PRIVATE_KEY', default=''),
-#     'client_email': config('FIREBASE_CLIENT_EMAIL', default=''),
-#     'client_id': config('FIREBASE_CLIENT_ID', default=''),
-#     'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
-#     'token_uri': 'https://oauth2.googleapis.com/token',
-# }
+# Import custom AI settings
+from .ai_settings import *
 
-# TODO: Google Cloud AI Configuration (Placeholder - not implemented yet)  
-# GOOGLE_CLOUD_PROJECT = config('GOOGLE_CLOUD_PROJECT', default='')
-# GOOGLE_APPLICATION_CREDENTIALS = config('GOOGLE_APPLICATION_CREDENTIALS', default='')
-
-# TODO: AI Services Configuration (Placeholder - not implemented yet)
-# OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
-# LANGCHAIN_API_KEY = config('LANGCHAIN_API_KEY', default='')
+# Firebase Configuration
+FIREBASE_CONFIG = {
+    'project_id': config('FIREBASE_PROJECT_ID', default=''),
+    'credentials_path': config('FIREBASE_CREDENTIALS', default=''),
+}
