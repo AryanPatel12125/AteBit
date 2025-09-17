@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LegalDoc Analyzer | Warm Theme with Side Chat</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+  :root {
+  --primary-color: #00557f; /* Deep teal-blue */
+  --primary-hover: #003f5c;
+  --primary-light: #a8d0f2; /* Soft sky blue */
+  --background-color: #f9fbfc; /* Very light gray-blue */
+  --text-color: #1c1c1c; /* Almost black */
+  --text-muted: #316B4B; /* Soft green-gray */
+  --highlight-key: #d1e6f8; /* Pale blue */
+  --highlight-important: #86efac; /* Soft green */
+  --highlight-critical: #ef4444; /* Soft red */
+  --border-color: #a7f3d0; /* Light emerald */
+  --shadow-color: rgba(6, 95, 70, 0.15); /* subtle forest green shadow */
+}
+
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* Header */
+header {
+  background-color: var(--primary-color);
+  color: var(--primary-light);
+  padding: 12px 0;
+  box-shadow: 0 3px 10px var(--shadow-color);
+}
+  .header-content {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; /* Push content to the right */
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  background: var(--primary-color);
+}
+
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+}
+
+
+.nav-links a {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+
+.logo {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+
+.logo-icon {
+  font-size: 1.8rem;
+  color: #ffffff;
+;
+}
+
+
+.logo h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+}
+
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+
+.nav-links a {
+  color:#ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+
+.nav-links a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 6px #ffffff;
+}
+
+
+/* Tabs */
+/* === Tabs Navigation (Full Width) === */
+.tab-navigation {
+  background-color: #ffffff;
+  border-bottom: 2px solid var(--border-color);
+  box-shadow: inset 0 -6px 8px -6px var(--shadow-color);
+  width: 100%;
+  padding: 0;             /* Remove horizontal padding */
+  margin: 0;
+  min-height: 60px;       /* Added to fix vertical coverage */
+  box-sizing: border-box;
+}
+
+
+.tabs {
+  width: 100%;
+  display: flex;
+  gap: 28px;
+  align-items: stretch;  /* Changed to stretch for full height tabs */
+  justify-content: flex-start;
+  padding-bottom: 0;     /* Reduced to zero for no gap at bottom */
+  padding-left: 48px;    /* Optional left spacing */
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+
+.tabs::-webkit-scrollbar {
+  height: 7px;
+}
+
+
+.tabs::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 5px;
+}
+
+
+.tab {
+  padding: 0 28px;       /* Removed top/bottom padding */
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  border-radius: 8px 8px 0 0;
+  font-size: 1.1rem;
+  border-bottom: 3px solid transparent;
+  user-select: none;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertically center content */
+  min-height: 60px;       /* Match nav height */
+  box-sizing: border-box;
+}
+
+
+.tab:hover {
+  color: var(--primary-hover);
+  background-color: var(--background-color);
+  font-weight: 700;
+  text-shadow: none;
+}
+
+
+
+.tab.active {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border-bottom: 3px solid var(--highlight-important);
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0, 85, 127, 0.13);
+  position: relative;
+  z-index: 2;
+}
+/* Smaller font for tab navigation */
+.tab {
+  font-size: 0.85rem; /* Reduced from 1.1rem */
+  padding: 0 18px;    /* Adjust padding accordingly */
+}
+
+
+.tab i {
+  font-size: 1rem;    /* Reduced icon size */
+  margin-bottom: 4px;
+}
+
+
+/* Smaller font for navigation links */
+.nav-links a {
+  font-size: 0.85rem;
+}
+
+
+/* Smaller font for header logo */
+.logo h1 {
+  font-size: 1.2rem;
+}
+
+
+/* Smaller font size for content sections */
+.content-section {
+  font-size: 0.9rem; /* Reduced from 1.1rem */
+  padding: 20px;     /* Slightly reduce padding */
+}
+
+
+/* Smaller font for buttons */
+.btn {
+  font-size: 0.9rem;
+  padding: 10px 24px;
+}
+
+
+
+/* Content Sections */
+.content-section {
+  background-color: var(--background-color);
+  border-radius: 14px;
+  box-shadow: 0 6px 28px var(--shadow-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.65;
+  overflow-y: auto;
+  padding: 30px 24px 48px;
+  min-height: 400px;
+  display: none;
+  max-width: 1100px;
+  margin: 20px auto;
+  transition: opacity 0.3s ease;
+}
+
+
+.content-section.active {
+  display: block;
+  animation: fadeIn 0.45s ease forwards;
+  opacity: 1;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Highlights */
+.highlight {
+  background-color: var(--highlight-key);
+  border-radius: 5px;
+  padding: 3px 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+}
+
+
+.highlight:hover {
+  background-color: var(--highlight-important);
+}
+
+
+.highlight-important {
+  background-color: var(--highlight-important);
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+
+.highlight-critical {
+  background-color: var(--highlight-critical);
+  font-weight: 700;
+  color: white;
+}
+
+
+/* Buttons */
+.btn {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 7px 22px rgba(6, 95, 70, 0.4);
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.btn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 10px 30px rgba(6, 95, 70, 0.6);
+}
+
+
+/* Upload area */
+/* Make upload area smaller and adjust color */
+.upload-area {
+  background-color: #eaf6fb;         /* soft light blue, or use another soft color */
+  border: 2px dashed var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 14px;
+  padding: 36px 16px;               /* less padding for a smaller box */
+  max-width: 560px;                 /* limit horizontal size */
+  margin: 24px auto;                /* center, with less vertical margin */
+  min-height: 160px;                /* or adjust as needed */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, border-color 0.3s;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+
+.upload-area:hover {
+  background-color: #c5ebf7;        /* a slightly stronger blue on hover */
+  border-color: var(--primary-hover);
+}
+
+
+.upload-icon {
+  font-size: 2.3rem;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  filter: none;
+}
+
+
+.upload-text {
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+
+.file-types {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  color: var(--primary-color);
+}
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* Center the upload document button */
+#uploadBtn {
+  display: block;
+  margin: 35px auto 0 auto;
+  padding: 14px 36px;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 7px 22px rgba(6, 95, 70, 0.4);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+#uploadBtn:hover {
+  background-color: var(--primary-hover);
+}
+
+
+/* Buttons: Share report and others, ensure white text */
+button.btn {
+  color: white !important;
+}
+
+
+button.btn i {
+  color: white !important;
+}
+
+
+/* Chat Button */
+.ai-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  cursor: pointer;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(6, 95, 70, 0.7);
+  transition: transform 0.3s ease;
+  z-index: 1200;
+  user-select: none;
+}
+
+
+.ai-button:hover {
+  transform: scale(1.1);
+}
+
+
+/* Chat Panel */
+.chat-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 20vw;
+  min-width: 280px;
+  height: 100vh;
+  background-color: var(--background-color);
+  border-left: 3px solid var(--primary-color);
+  box-shadow: -4px 0 20px rgba(6, 95, 70, 0.3);
+  display: none;
+  flex-direction: column;
+  z-index: 1199;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  transition: 0.3s ease;
+  overflow: hidden;
+}
+
+
+.chat-panel.active {
+  display: flex;
+  animation: slideIn 0.3s ease forwards;
+}
+
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+.chat-header {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: inset 0 -3px 8px rgba(6, 95, 70, 0.6);
+  display: flex;
+  align-items: center;
+}
+
+
+.chat-header .close-btn {
+  margin-left: auto;
+  font-size: 20px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--background-color);
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+
+.chat-header .close-btn:hover {
+  background-color: var(--highlight-important);
+}
+
+
+.chat-content {
+  flex-grow: 1;
+  padding: 14px 16px;
+  overflow-y: auto;
+  background-color: #e9f7f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+.message {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.2);
+  user-select: text;
+}
+
+
+.message.user {
+  background-color: var(--secondary-color);
+  color: var(--background-color);
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+}
+
+
+.message.bot {
+  background-color: var(--highlight-key);
+  color: var(--text-color);
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+}
+
+
+.chat-input-container {
+  display: flex;
+  padding: 12px 16px;
+  gap: 10px;
+  background-color: var(--secondary-color);
+}
+
+
+.chat-input {
+  flex-grow: 1;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: inset 0 0 6px var(--primary-light);
+  color: var(--text-color);
+  transition: box-shadow 0.3s ease;
+}
+
+
+.chat-input:focus {
+  box-shadow: 0 0 8px var(--primary-color);
+}
+
+
+.chat-send-button {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(6, 95, 70, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+
+.chat-send-button:hover {
+  background-color: var(--highlight-important);
+}
+
+
+.suggested-questions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+
+.suggested-question {
+  background-color: var(--highlight-key);
+  color: var(--secondary-color);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  user-select: none;
+}
+
+
+.suggested-question:hover {
+  background-color: var(--secondary-color);
+  color: var(--highlight-key);
+  box-shadow: 0 0 12px var(--primary-hover);
+}
+
+
+/* Scrollbar styling */
+.chat-content::-webkit-scrollbar {
+  width: 7px;
+}
+
+
+.chat-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.chat-content::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 5px;
+}
+
+
+/* Responsive */
+@media (max-width: 600px) {
+  .chat-panel {
+    width: 80vw !important;
+    min-width: auto !important;
+  }
+}
+
+
+</style>
+</head>
+<body>
+  <!-- Header and navigation -->
+  <header>
+    <div class="header-content">
+      <div class="nav-links">
+        <a href="#"><i class="fas fa-home"></i> Home</a>
+        <a href="#"><i class="fas fa-history"></i> History</a>
+        <a href="#"><i class="fas fa-user"></i> Account</a>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <div class="tabs" id="tabsContainer">
+        <div class="tab active" data-tab="document"> Document
+        </div>
+        <div class="tab" data-tab="summary"> Summary
+        </div>
+        <div class="tab" data-tab="keypoints">Key Points
+        </div>
+        <div class="tab" data-tab="clause-comparison">Clause Comparison
+        </div>
+        <div class="tab" data-tab="visual-flowcharts">Flowcharts & Infographics
+        </div>
+        <div class="tab" data-tab="risk-alerts">Risk & Compliance Alerts
+        </div>
+        <div class="tab" data-tab="voice-audio">Voice Input & Audio Summaries
+        </div>
+        <div class="tab" data-tab="education-modules">Educational Modules
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <div class="container">
+    <!-- Upload Area -->
+    <div id="uploadPage">
+      <section class="upload-section animated">
+        <h2>Upload Your Legal Document</h2>
+        <p>Upload your legal document for in-depth analysis and summarization</p>
+
+        <div id="dropZone" class="upload-area" tabindex="0">
+          <i class="fas fa-file-upload upload-icon"></i>
+          <p class="upload-text">Drag &amp; drop your document here or click to select</p>
+          <p class="file-types">Supported formats: <strong>PDF, DOCX, DOC</strong> (Max size: 10 MB)</p>
+        </div>
+
+        <input type="file" id="fileInput" style="display: none;" accept=".pdf,.doc,.docx" />
+
+        <button id="uploadBtn" class="btn">
+          <i class="fas fa-cloud-upload-alt"></i> Upload Document
+        </button>
+
+        <!-- Loading indicator for file upload -->
+        <div id="loadingIndicator" style="display:none; text-align:center; padding: 20px; color: var(--primary-color); font-weight: 700;">
+          Loading, please wait...
+        </div>
+      </section>
+    </div>
+
+    <!-- Results Page -->
+    <div id="resultsPage" style="display:none;">
+      <!-- Document Tab -->
+      <div class="content-section active" id="document-tab">
+        <section class="document-viewer animated">
+          <div class="viewer-header">
+            <h3><i class="fas fa-file-pdf card-icon"></i> Document Viewer</h3>
+            <div class="viewer-controls">
+              <button title="Zoom In"><i class="fas fa-search-plus"></i></button>
+              <button title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+              <button title="Download"><i class="fas fa-download"></i></button>
+            </div>
+          </div>
+          <div class="document-content">
+            <div class="document-page" id="documentPage">
+              <p>Document content will appear here after analysis.</p>
+            </div>
+          </div>
+          <div class="highlight-legend">
+            <div class="legend-item">
+              <div class="legend-color key"></div>
+              <span>Key Clauses</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color important"></div>
+              <span>Important Dates</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color critical"></div>
+              <span>Critical Obligations</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Summary Tab -->
+      <div class="content-section" id="summary-tab">
+        <div class="results-section">
+          <div class="result-card animated">
+            <h3><i class="fas fa-file-alt card-icon"></i> Document Summary</h3>
+            <div class="translation-controls">
+              <label for="summaryLanguage">Translate Summary:</label>
+              <select id="summaryLanguage" title="Select language">
+                <option value="en" selected>English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="zh">Chinese</option>
+                <option value="hi">Hindi</option>
+              </select>
+            </div>
+            <div class="summary-content" id="summaryContent">
+              <p>Document summary will appear here after analysis.</p>
+            </div>
+            <div class="lawyer-warning" id="lawyerWarning">
+              <i class="fas fa-exclamation-circle"></i>
+              This analysis does not constitute legal advice. Always consult a qualified
+              attorney before relying on this information.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Points Tab -->
+      <div class="content-section" id="keypoints-tab">
+        <div class="results-section">
+          <div class="result-card animated">
+            <h3><i class="fas fa-key card-icon"></i> Key Points</h3>
+            <div class="keypoints-content" id="keypointsContent">
+              <div class="keypoint">
+                <p>Key points will appear here after analysis.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clause Comparison -->
+      <div class="content-section" id="clause-comparison-tab">
+        <div class="clause-comparison">
+          <h3><i class="fas fa-columns"></i> Clause Comparison & Analysis</h3>
+          <p>
+            Upload multiple documents to compare similar clauses side-by-side.
+            Differences, risks, and implications will be highlighted, along with AI-generated best practice suggestions.
+          </p>
+          <div style="margin-top:16px; display:flex; gap:20px; flex-wrap:wrap;">
+            <div style="flex: 1 1 45%;">
+              <h4>Document 1 Clause (placeholder)</h4>
+              <pre id="clauseDoc1">Clause details will appear here.</pre>
+            </div>
+            <div style="flex: 1 1 45%;">
+              <h4>Document 2 Clause (placeholder)</h4>
+              <pre id="clauseDoc2">Clause details will appear here.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Flowcharts -->
+      <div class="content-section" id="visual-flowcharts-tab">
+        <div class="visual-flowcharts">
+          <h3><i class="fas fa-project-diagram"></i> Visual Legal Flowcharts & Infographics</h3>
+          <p>Complex legal text will be converted into interactive visual diagrams, showing relationships, timelines, and workflows.</p>
+          <div
+            id="flowchartPlaceholder"
+            style="
+              height: 350px;
+              border: 2px dashed var(--primary-color);
+              border-radius: 6px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              color: var(--primary-color);
+              font-weight: bold;
+              font-family: 'Georgia', serif;
+            "
+          >
+            Flowchart and infographic area (to be implemented)
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Alerts -->
+      <div class="content-section" id="risk-alerts-tab">
+        <div class="risk-alerts">
+          <h3><i class="fas fa-exclamation-triangle"></i> Risk Detection & Compliance Alerts</h3>
+          <p>AI scans documents to identify potentially risky or non-compliant clauses. Flags and alerts will be shown here with detailed explanations.</p>
+          <ul id="riskAlertList" style="margin-top: 15px; color: var(--highlight-critical); font-weight: 700; font-family: 'Georgia', serif;">
+            <li>(Placeholder) No current risks detected.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Voice Input -->
+      <div class="content-section" id="voice-audio-tab">
+        <div class="voice-audio">
+          <h3><i class="fas fa-microphone"></i> Voice Input & Audio Summaries</h3>
+          <p>Use voice commands or upload voice notes regarding your documents. Listen to AI-generated audio summaries as well.</p>
+          <div class="voice-controls">
+            <button id="startVoiceBtn"><i class="fas fa-microphone"></i> Start Voice Input</button>
+            <button id="stopVoiceBtn" disabled><i class="fas fa-stop"></i> Stop Voice Input</button>
+          </div>
+          <div id="voiceTranscript" style="border-radius: 6px; background: #f9f0de; padding: 14px; min-height: 80px; font-style: italic; font-family: 'Georgia', serif; color: var(--primary-color);">
+            Voice input transcription will appear here...
+          </div>
+          <div style="margin-top: 20px;">
+            <button id="playAudioSummaryBtn" class="btn" style="background-color: var(--primary-color); color: var(--primary-light);">
+              <i class="fas fa-play"></i> Play Audio Summary
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Educational Modules -->
+      <div class="content-section" id="education-modules-tab">
+        <div class="education-modules">
+          <h3><i class="fas fa-graduation-cap"></i> Educational Modules</h3>
+          <p>Interactive AI-driven tutorials and lessons to help you read and understand legal documents effectively.</p>
+          <div class="education-content" id="educationContent" tabindex="0" style="outline:none;">
+            <h4>Welcome to LegalDoc Learning</h4>
+            <p>Here you will find bite-sized tutorials about common legal document clauses, how to read contracts, risk factors to notice, and more.</p>
+            <ul>
+              <li><strong>Lesson 1:</strong> Understanding Termination Clauses</li>
+              <li><strong>Lesson 2:</strong> Payment Terms Explained</li>
+              <li><strong>Lesson 3:</strong> Common Risks in Leasing Agreements</li>
+              <li><strong>Lesson 4:</strong> How Non-Disclosure Agreements Protect You</li>
+              <li><em>More lessons coming soon...</em></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons" style="margin-top: 40px; display: flex; gap: 18px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn" style="background-color: var(--primary-color); color: var(--primary-light); font-weight: 700; padding: 14px 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(181,138,74,0.4); font-family: 'Palatino Linotype', serif;">
+          <i class="fas fa-download" style="margin-right: 12px;"></i> Download Report
+        </button>
+        <button class="btn" style="background-color: #b56a12; color: var(--primary-light); font-weight: 700; padding: 14px 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(181,106,18,0.45);">
+          <i class="fas fa-share-alt" style="margin-right: 12px;"></i> Share Analysis
+        </button>
+        <button class="btn" id="analyzeAnother" style="background-color: #9c4a00; color: var(--primary-light); font-weight: 700; padding: 14px 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(156,74,0,0.45);">
+          <i class="fas fa-redo" style="margin-right: 12px;"></i> Analyze Another Document
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Assistant Button -->
+  <div class="ai-assistant-btn" id="aiAssistantBtn" title="Open Legal Assistant" style="position:fixed;bottom:30px;right:30px;width:56px;height:56px;border-radius:50%;background:#b5651d;color:#f7e9d7;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 6px 18px rgba(181,102,25,0.75);cursor:pointer;z-index:1200;transition:transform 0.3s ease;user-select:none;">
+    <i class="fas fa-robot"></i>
+  </div>
+
+  <!-- AI Assistant Panel on right side -->
+  <div class="ai-panel" id="aiPanel" aria-hidden="true" style="position:fixed;top:0;right:0;width:20vw;min-width:280px;height:100vh;background:#f7e9d7;border-left:3px solid #b5651d;box-shadow:-4px 0 20px rgba(181,138,74,0.4);display:none;flex-direction:column;z-index:1150;overflow:hidden;font-family:'Georgia',serif;color:#5a4529;transition:transform 0.3s ease;will-change:transform;">
+    <div class="ai-header" style="background:#b5651d;color:#f7e9d7;padding:18px 20px;display:flex;align-items:center;gap:12px;font-family:'Palatino Linotype',serif;font-weight:700;font-size:1.3rem;box-shadow:inset 0 -4px 10px rgba(181,102,25,0.6);">
+      <i class="fas fa-robot"></i>
+      <h3>Legal Assistant</h3>
+      <div class="ai-close" id="aiClose" aria-label="Close Chat Panel" style="margin-left:auto;cursor:pointer;font-size:20px;color:#f7e9d7;user-select:none;">&times;</div>
+    </div>
+    <div class="ai-conversation" id="aiConversation" style="flex:1;overflow-y:auto;padding:15px 18px;display:flex;flex-direction:column;gap:14px;font-size:1rem;line-height:1.5;background:#fef6db;border-top:1px solid #d9b994;border-bottom:1px solid #d9b994;color:#5a4529;">
+      <div class="ai-message ai-bot" style="max-width:80%;padding:12px 16px;background:#f1d190;border-radius:20px;box-shadow:0 2px 12px rgba(181,102,25,0.35);font-weight:600;">
+        Hi there! I'm your legal document assistant. How can I help you with your document today?
+      </div>
+      <div class="suggested-questions" style="display:grid;gap:10px;margin-top:16px;padding-left:12px;color:#947a57;font-family:'Georgia',serif;font-size:0.9rem;user-select:none;">
+        <div class="suggested-question" data-question="Explain the termination clause in simple terms" style="padding:10px 14px;background:#f7e0b9;border-radius:20px;cursor:pointer;transition:background-color 0.25s ease;font-weight:600;color:#b5651d;font-family:'Palatino Linotype',serif;">Explain the termination clause in simple terms</div>
+        <div class="suggested-question" data-question="What are the most important obligations in this document?" style="padding:10px 14px;background:#f7e0b9;border-radius:20px;cursor:pointer;transition:background-color 0.25s ease;font-weight:600;color:#b5651d;font-family:'Palatino Linotype',serif;">What are the most important obligations in this document?</div>
+        <div class="suggested-question" data-question="Are there any potential risks I should be aware of?" style="padding:10px 14px;background:#f7e0b9;border-radius:20px;cursor:pointer;transition:background-color 0.25s ease;font-weight:600;color:#b5651d;font-family:'Palatino Linotype',serif;">Are there any potential risks I should be aware of?</div>
+      </div>
+    </div>
+    <div class="ai-input" style="display:flex;padding:15px 20px;border-top:1px solid #d9b994;gap:13px;background:#f7e9d7;">
+      <input type="text" id="aiInput" placeholder="Ask something about your document..." aria-label="Chat input" style="flex:1;padding:14px 18px;border:1.5px solid #d9b994;border-radius:26px;outline:none;font-size:1rem;font-family:'Georgia',serif;color:#5a4529;transition:border-color 0.3s ease;box-shadow:inset 0 0 10px #f7e9d7;" />
+      <button id="aiSend" aria-label="Send message" style="background:#b5651d;color:#f7e9d7;border:none;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 5px 15px rgba(181,102,25,0.65);transition:background-color 0.3s;user-select:none;">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabs = document.querySelectorAll('.tab');
+      const contentSections = document.querySelectorAll('.content-section');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          contentSections.forEach(sec => sec.classList.remove('active'));
+          document.getElementById(tab.getAttribute('data-tab') + '-tab').classList.add('active');
+        });
+      });
+
+      const dropZone = document.getElementById('dropZone');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const fileInput = document.getElementById('fileInput');
+      const uploadPage = document.getElementById('uploadPage');
+      const resultsPage = document.getElementById('resultsPage');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+
+      dropZone.addEventListener('click', () => fileInput.click());
+      dropZone.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          fileInput.click();
+        }
+      });
+      uploadBtn.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+          loadingIndicator.style.display = 'block';
+          setTimeout(() => {
+            loadingIndicator.style.display = 'none';
+            uploadPage.style.display = 'none';   // HIDE upload
+            resultsPage.style.display = 'block';  // SHOW results
+          }, 2000); // Simulate loading
+        }
+      });
+
+      // AI Assistant toggle and panel management
+      const aiAssistantBtn = document.getElementById('aiAssistantBtn');
+      const aiPanel = document.getElementById('aiPanel');
+      const aiClose = document.getElementById('aiClose');
+      let chatOpen = false;
+
+      function openChat() {
+        aiPanel.classList.add('active');
+        chatOpen = true;
+        aiPanel.setAttribute('aria-hidden', 'false');
+      }
+      function closeChat() {
+        aiPanel.classList.remove('active');
+        chatOpen = false;
+        aiPanel.setAttribute('aria-hidden', 'true');
+      }
+
+      aiAssistantBtn.addEventListener('click', () => {
+        if(chatOpen) closeChat();
+        else openChat();
+      });
+      aiClose.addEventListener('click', closeChat);
+
+      // AI Messaging logic
+      const aiSend = document.getElementById('aiSend');
+      const aiInput = document.getElementById('aiInput');
+      const aiConversation = document.getElementById('aiConversation');
+      const suggestedQuestions = document.querySelectorAll('.suggested-question');
+
+      function addAIMessage(text, sender) {
+        const message = document.createElement('div');
+        message.classList.add('ai-message', sender === 'user' ? 'ai-user' : 'ai-bot');
+        message.textContent = text;
+        aiConversation.appendChild(message);
+        aiConversation.scrollTop = aiConversation.scrollHeight;
+      }
+
+      aiSend.addEventListener('click', () => {
+        const text = aiInput.value.trim();
+        if(text){
+          addAIMessage(text, 'user');
+          aiInput.value = '';
+          setTimeout(() => {
+            addAIMessage("This is a simulated AI response generated for: " + text, 'bot');
+          }, 1000);
+        }
+      });
+
+      aiInput.addEventListener('keypress', (e) =>{
+        if(e.key === 'Enter'){
+          aiSend.click();
+        }
+      });
+
+      suggestedQuestions.forEach(el => {
+        el.addEventListener('click', () => {
+          aiInput.value = el.getAttribute('data-question');
+          aiSend.click();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
