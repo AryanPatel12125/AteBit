@@ -5,12 +5,14 @@ Models for document storage, analysis results, and history tracking.
 from django.db import models
 from django.core.validators import MinLengthValidator
 from typing import Dict, Any, List
+import uuid
 
 class Document(models.Model):
     """
     Model representing a legal document and its metadata.
     
     Attributes:
+        document_id: UUID primary key (provided by frontend)
         title: Document title/name
         owner_uid: Firebase user ID of document owner
         file_type: MIME type of original document
@@ -28,6 +30,10 @@ class Document(models.Model):
         ANALYZED = 'ANALYZED', 'Analysis Complete'
         ERROR = 'ERROR', 'Processing Error'
     
+    document_id = models.UUIDField(
+        primary_key=True,
+        help_text="UUID provided by frontend for consistent identification across Firebase services"
+    )
     title = models.CharField(
         max_length=255,
         validators=[MinLengthValidator(1)]
@@ -71,27 +77,27 @@ class Document(models.Model):
         ]
     
     def __str__(self) -> str:
-        return f"{self.title} ({self.status})"
+        return f"{self.title} ({self.status}) - {self.document_id}"
 
 class Analysis(models.Model):
     """
     Model storing AI analysis results for a document.
+    Compatible with Firestore subcollection: documents/{document_id}/analyses/{version}
     
     Attributes:
-        document: Related Document instance
+        document_id: UUID of the related document (matches Firestore document key)
         version: Analysis version number
         target_language: Target language for translations (ISO 639-1)
-        summary: Plain language summary
-        key_points: Extracted key points with citations
-        risk_alerts: Detected risks and compliance issues
+        summary: Plain language summary with multi-language support
+        key_points: Extracted key points with citations and party analysis
+        risk_alerts: Detected risks and compliance issues with severity
         token_usage: LLM token usage statistics
         completion_time: Analysis completion timestamp
     """
     
-    document = models.ForeignKey(
-        Document,
-        on_delete=models.CASCADE,
-        related_name='analyses'
+    document_id = models.UUIDField(
+        db_index=True,
+        help_text="UUID of the related document (matches Firestore document key)"
     )
     version = models.PositiveIntegerField()
     target_language = models.CharField(
@@ -101,32 +107,40 @@ class Analysis(models.Model):
         help_text="ISO 639-1 target language code"
     )
     summary = models.JSONField(
-        help_text="Summary in simple language",
+        help_text="Summary in multiple languages: {'en': 'text', 'es': 'texto'}",
         default=dict
     )
     key_points = models.JSONField(
-        help_text="Key points with citations",
+        help_text="Key points with party analysis: [{'text': '', 'explanation': '', 'party_benefit': '', 'citation': ''}]",
         default=list
     )
     risk_alerts = models.JSONField(
-        help_text="Risk and compliance alerts",
+        help_text="Risk alerts with severity: [{'severity': 'HIGH', 'clause': '', 'rationale': '', 'location': ''}]",
         default=list
     )
     token_usage = models.JSONField(
-        help_text="LLM token usage stats",
+        help_text="Token usage stats: {'input_tokens': 1500, 'output_tokens': 200}",
         default=dict
     )
     completion_time = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         ordering = ['-version']
-        unique_together = ['document', 'version']
+        unique_together = ['document_id', 'version']
         indexes = [
-            models.Index(fields=['document', '-version'])
+            models.Index(fields=['document_id', '-version'])
         ]
     
     def __str__(self) -> str:
-        return f"Analysis v{self.version} for {self.document.title}"
+        return f"Analysis v{self.version} for document {self.document_id}"
+    
+    @property
+    def document(self) -> Document:
+        """Get the related document instance."""
+        try:
+            return Document.objects.get(document_id=self.document_id)
+        except Document.DoesNotExist:
+            return None
     
     @property
     def summary_text(self) -> str:
@@ -143,9 +157,10 @@ class Analysis(models.Model):
 class History(models.Model):
     """
     Model tracking document history and user actions.
+    Compatible with Firestore subcollection: documents/{document_id}/history/{timestamp}
     
     Attributes:
-        document: Related Document instance
+        document_id: UUID of the related document (matches Firestore document key)
         action: Type of action performed
         actor_uid: Firebase user ID who performed action
         version: Analysis version (if applicable)
@@ -161,10 +176,9 @@ class History(models.Model):
         DOWNLOADED = 'DOWNLOADED', 'Report Downloaded'
         ERROR = 'ERROR', 'Error Occurred'
     
-    document = models.ForeignKey(
-        Document,
-        on_delete=models.CASCADE,
-        related_name='history'
+    document_id = models.UUIDField(
+        db_index=True,
+        help_text="UUID of the related document (matches Firestore document key)"
     )
     action = models.CharField(
         max_length=20,
@@ -181,23 +195,31 @@ class History(models.Model):
     payload = models.JSONField(
         null=True,
         blank=True,
-        help_text="Additional action data"
+        help_text="Additional action data matching Firestore structure"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         ordering = ['-timestamp']
         indexes = [
-            models.Index(fields=['document', '-timestamp'])
+            models.Index(fields=['document_id', '-timestamp'])
         ]
     
     def __str__(self) -> str:
-        return f"{self.action} on {self.document.title} by {self.actor_uid}"
+        return f"{self.action} on document {self.document_id} by {self.actor_uid}"
+    
+    @property
+    def document(self) -> Document:
+        """Get the related document instance."""
+        try:
+            return Document.objects.get(document_id=self.document_id)
+        except Document.DoesNotExist:
+            return None
     
     @classmethod
     def log_action(
         cls,
-        document: Document,
+        document_id: uuid.UUID,
         action: Action,
         actor_uid: str,
         version: int = None,
@@ -207,7 +229,7 @@ class History(models.Model):
         Create a new history entry.
         
         Args:
-            document: The document the action was performed on
+            document_id: UUID of the document the action was performed on
             action: Type of action from Action choices
             actor_uid: Firebase user ID who performed action
             version: Optional analysis version number
@@ -217,7 +239,7 @@ class History(models.Model):
             New History instance
         """
         return cls.objects.create(
-            document=document,
+            document_id=document_id,
             action=action,
             actor_uid=actor_uid,
             version=version,

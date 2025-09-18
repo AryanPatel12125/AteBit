@@ -1,0 +1,59 @@
+# Test requirements for legal document AI backend
+# These are additional packages needed for running the comprehensive test suite
+
+# Core testing framework (already in main requirements.txt)
+# pytest>=7.0.0
+# pytest-django>=4.5.0
+
+# Coverage reporting
+coverage>=7.0.0
+pytest-cov>=4.0.0
+
+# Mock and testing utilities
+pytest-mock>=3.10.0
+factory-boy>=3.2.0
+faker>=18.0.0
+
+# HTTP testing
+responses>=0.23.0
+httpretty>=1.1.4
+
+# Async testing support
+pytest-asyncio>=0.21.0
+
+# Test data generation
+model-bakery>=1.10.0
+
+# Performance testing
+pytest-benchmark>=4.0.0
+
+# Test reporting
+pytest-html>=3.1.0
+pytest-json-report>=1.5.0
+
+# Database testing utilities
+pytest-postgresql>=4.1.0  # If we need real PostgreSQL for integration tests
+
+# File testing utilities
+pytest-datafiles>=3.0.0
+
+# Environment variable testing
+pytest-env>=0.8.0
+
+# Parallel test execution
+pytest-xdist>=3.2.0
+
+# Test fixtures and utilities
+pytest-factoryboy>=2.5.0
+
+# Memory profiling for performance tests
+memory-profiler>=0.60.0
+
+# Time-based testing
+freezegun>=1.2.0
+
+# API testing utilities
+tavern>=2.0.0  # For API integration tests
+
+# Documentation testing
+pytest-doctest>=0.0.1

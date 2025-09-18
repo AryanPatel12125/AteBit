@@ -6,6 +6,7 @@ It verifies Firebase ID tokens from the Authorization header and sets user conte
 """
 
 import logging
+import os
 from datetime import datetime
 from typing import Optional, Tuple, Dict, Any
 from functools import lru_cache
@@ -13,14 +14,29 @@ from functools import lru_cache
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from rest_framework import authentication, exceptions
-from firebase_admin import credentials, initialize_app, auth, get_app
-from firebase_admin.exceptions import FirebaseError
+
+# Import Firebase modules only if not in test mode
+if not (getattr(settings, 'TESTING', False) or os.environ.get('TESTING')):
+    from firebase_admin import credentials, initialize_app, auth, get_app
+    from firebase_admin.exceptions import FirebaseError
+else:
+    # Mock for testing
+    from unittest.mock import Mock
+    credentials = Mock()
+    initialize_app = Mock()
+    auth = Mock()
+    get_app = Mock()
+    FirebaseError = Exception
 
 logger = logging.getLogger(__name__)
 
 # Initialize Firebase Admin SDK
 def initialize_firebase() -> None:
     """Initialize Firebase Admin SDK with credentials from settings."""
+    # Skip initialization in test mode
+    if getattr(settings, 'TESTING', False) or os.environ.get('TESTING'):
+        return
+        
     try:
         # Check if already initialized
         get_app()

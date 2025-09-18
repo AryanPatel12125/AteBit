@@ -184,3 +184,13 @@ FIREBASE_CONFIG = {
     'project_id': config('FIREBASE_PROJECT_ID', default=''),
     'credentials_path': config('FIREBASE_CREDENTIALS', default=''),
 }
+
+# Firestore Configuration
+FIRESTORE_SETTINGS = {
+    'project_id': GOOGLE_CLOUD_PROJECT,
+    'database_id': config('FIRESTORE_DATABASE_ID', default='(default)'),
+    'collection_prefix': config('FIRESTORE_COLLECTION_PREFIX', default=''),
+}
+
+# Google Cloud Storage Configuration
+GCS_BUCKET_NAME = config('GCS_BUCKET_NAME', default=f'{GOOGLE_CLOUD_PROJECT}-documents')

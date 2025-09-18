@@ -11,6 +11,16 @@ GOOGLE_CLOUD_PROJECT = config('GOOGLE_CLOUD_PROJECT', default='')
 GOOGLE_APPLICATION_CREDENTIALS = config('GOOGLE_APPLICATION_CREDENTIALS', 
                                      default=os.getenv('GOOGLE_APPLICATION_CREDENTIALS', ''))
 
+# Validate credentials on startup
+if GOOGLE_CLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS:
+    credentials_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), GOOGLE_APPLICATION_CREDENTIALS)
+    if not os.path.exists(credentials_path):
+        print(f"WARNING: Credential file not found at {credentials_path}")
+        print("Please ensure service-account-key.json is in backend/credentials/")
+else:
+    print("WARNING: GCP credentials not configured. Some features may not work.")
+    print("Please check your .env file and credential setup.")
+
 # Vertex AI Settings
 VERTEX_SETTINGS = {
     'location': config('VERTEX_LOCATION', default='us-central1'),
