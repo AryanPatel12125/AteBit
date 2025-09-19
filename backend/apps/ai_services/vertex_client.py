@@ -6,7 +6,9 @@ import json
 import logging
 import os
 import asyncio
+import time
 from django.conf import settings
+from apps.documents.logging_utils import ai_services_logger, log_performance, log_ai_service_call
 
 # Import Vertex AI modules only if not in test mode
 if not (getattr(settings, 'TESTING', False) or os.environ.get('TESTING')):
@@ -122,11 +124,23 @@ class VertexAIClient:
         Returns:
             Generated text response
         """
+        start_time = time.time()
+        
         if getattr(settings, 'TESTING', False) or os.environ.get('TESTING'):
             # Return mock response for testing
             return '{"summary": "Mock summary", "detected_language": "en", "confidence": 0.95}'
         
         try:
+            # Log request start
+            ai_services_logger.info(
+                "Starting Vertex AI text generation",
+                extra={
+                    'max_output_tokens': max_output_tokens,
+                    'temperature': temperature,
+                    'prompt_length': len(prompt)
+                }
+            )
+            
             # Configure generation parameters
             generation_config = {
                 'max_output_tokens': max_output_tokens or settings.VERTEX_SETTINGS['max_output_tokens'],
@@ -144,13 +158,38 @@ class VertexAIClient:
             
             if not response.text:
                 raise ValueError("Empty response from Vertex AI")
+            
+            duration = time.time() - start_time
+            
+            # Log successful generation
+            log_ai_service_call(
+                service="vertex_ai",
+                operation="generate_text",
+                duration=duration,
+                extra={
+                    'response_length': len(response.text),
+                    'prompt_length': len(prompt),
+                    'max_output_tokens': max_output_tokens,
+                    'temperature': temperature
+                }
+            )
                 
             return response.text.strip()
             
         except Exception as e:
-            logger.error(f"Error generating text with Vertex AI: {e}")
+            duration = time.time() - start_time
+            ai_services_logger.error(
+                f"Error generating text with Vertex AI: {e}",
+                extra={
+                    'duration_ms': round(duration * 1000, 2),
+                    'prompt_length': len(prompt),
+                    'error_type': type(e).__name__
+                },
+                exc_info=True
+            )
             raise
 
+    @log_performance("document_analysis")
     async def analyze_document(
         self,
         text: str,
@@ -168,7 +207,14 @@ class VertexAIClient:
         Returns:
             Structured analysis results
         """
-        logger.info(f"Starting document analysis, type: {analysis_type}")
+        ai_services_logger.info(
+            f"Starting document analysis",
+            extra={
+                'analysis_type': analysis_type,
+                'target_language': target_language,
+                'text_length': len(text)
+            }
+        )
         
         # Route to specific analysis methods
         if analysis_type == 'summarize':
@@ -217,6 +263,7 @@ class VertexAIClient:
             except json.JSONDecodeError:
                 raise ValueError("Failed to get valid JSON response from model")
         
+    @log_performance("document_summarization")
     async def summarize_document(
         self,
         text: str,
@@ -232,7 +279,13 @@ class VertexAIClient:
         Returns:
             Dictionary containing summary, detected language, and token usage
         """
-        logger.info(f"Starting document summarization, target_language: {target_language}")
+        ai_services_logger.info(
+            f"Starting document summarization",
+            extra={
+                'target_language': target_language,
+                'text_length': len(text)
+            }
+        )
         
         # Build the prompt for summarization
         system_prompt = """You are a legal document expert who explains complex legal documents in extremely simple language that a 12-year-old could understand.
@@ -280,7 +333,14 @@ Return your response in the following JSON format:
             if target_language:
                 result['target_language'] = target_language
             
-            logger.info(f"Summarization completed, tokens used: {result['token_usage']['total_tokens']}")
+            ai_services_logger.info(
+                f"Summarization completed",
+                extra={
+                    'tokens_used': result['token_usage']['total_tokens'],
+                    'target_language': target_language,
+                    'summary_length': len(result.get('summary', ''))
+                }
+            )
             return result
             
         except json.JSONDecodeError as e:

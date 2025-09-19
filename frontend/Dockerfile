@@ -7,17 +7,14 @@ WORKDIR /app
 # Copy package files (both package.json and package-lock.json)
 COPY package*.json ./
 
-# Install exact dependencies from lock file
-RUN npm ci --omit=dev
+# Install ALL dependencies (including dev dependencies for development)
+RUN npm ci
 
 # Copy project files
 COPY . .
 
-# Build the application
-RUN npm run build
-
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"]
+# Start the development server with hot reloading
+CMD ["npm", "run", "dev"]

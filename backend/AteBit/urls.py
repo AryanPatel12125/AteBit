@@ -27,10 +27,24 @@ def health_check(request):
         'version': '1.0.0-dev'
     })
 
+def version_info(request):
+    """Version information endpoint"""
+    return JsonResponse({
+        'version': '1.0.0-dev',
+        'api_version': 'v1',
+        'platform': 'AteBit Legal Document AI Platform'
+    })
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    
+    # System endpoints
     path("api/health/", health_check, name="health_check"),
-    # TODO: Add app URLs when ready
-    # path("api/documents/", include("apps.documents.urls")),
+    path("api/version/", version_info, name="version_info"),
+    
+    # API v1 endpoints
+    path("api/documents/", include("apps.documents.urls")),
+    
+    # Future API endpoints (when implemented)
     # path("api/ai-services/", include("apps.ai_services.urls")),
 ]

@@ -1,0 +1,16 @@
+# Development overrides for docker-compose.yml
+# This file is automatically loaded by docker-compose for development
+
+services:
+  backend:
+    # Enable development features
+    environment:
+      - DEBUG=True
+      - DJANGO_LOG_LEVEL=INFO
+    
+  frontend:
+    # Enable development features
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+      - FAST_REFRESH=true

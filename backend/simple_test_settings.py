@@ -1,9 +1,7 @@
 """
-Django settings for testing the legal document AI backend.
-This configuration avoids Google Cloud authentication issues during testing.
+Minimal Django settings for testing without admin interface.
 """
 import os
-from unittest.mock import Mock
 
 # Basic Django settings
 DEBUG = True
@@ -17,12 +15,10 @@ DATABASES = {
     }
 }
 
-# Installed apps
+# Minimal installed apps
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'django.contrib.auth',
     'rest_framework',
     'apps.documents',
     'apps.authz',
@@ -72,13 +68,6 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'WARNING',
     },
-    'loggers': {
-        'apps.documents': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
 }
 
 # Time zone settings
@@ -86,11 +75,10 @@ USE_TZ = True
 TIME_ZONE = 'UTC'
 
 # URL configuration
-ROOT_URLCONF = 'AteBit.urls'
+ROOT_URLCONF = 'test_urls'
 
 # Test-specific settings
 TESTING = True
 
 # Set environment variable to indicate we're in test mode
-import os
 os.environ['TESTING'] = 'True'

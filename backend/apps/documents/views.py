@@ -28,6 +28,15 @@ from .services import firestore_service, gcs_service, vertex_client
 from .services.firestore_service import FirestoreError
 from .services.gcs_service import GCSError
 from .services.text_extractor import TextExtractor, TextExtractionError
+from .logging_utils import log_api_request, documents_logger, log_document_operation
+from .exceptions import (
+    DocumentNotFoundError,
+    DocumentAccessDeniedError,
+    VertexAIError,
+    GCSError as DocumentGCSError,
+    FirestoreError as DocumentFirestoreError,
+    FileProcessingError
+)
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +122,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
             logger.error(f"Firestore error retrieving document {document_id}: {str(e)}")
             raise Http404("Document not found")
     
+    @log_api_request
     def create(self, request: Request) -> Response:
         """
         Create a new document with metadata.
@@ -153,24 +163,33 @@ class DocumentViewSet(viewsets.ModelViewSet):
                 actor_uid=request.user_uid
             )
             
-            logger.info(f"Created document {document_id} for user {request.user_uid}")
+            log_document_operation(
+                operation="create",
+                document_id=document_id,
+                user_uid=request.user_uid,
+                extra={'title': validated_data['title'], 'file_type': validated_data['file_type']}
+            )
             
             response_serializer = DocumentSerializer(document, context={'request': request})
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
             
         except FirestoreError as e:
-            logger.error(f"Failed to create document in Firestore: {str(e)}")
-            return Response(
-                {'error': 'Failed to create document', 'detail': str(e)},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            raise DocumentFirestoreError(
+                message="Failed to create document in Firestore",
+                operation="create_document",
+                document_id=document_id,
+                original_error=e
             )
         except Exception as e:
-            logger.error(f"Unexpected error creating document: {str(e)}")
-            return Response(
-                {'error': 'Internal server error'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            documents_logger.error(
+                f"Unexpected error creating document: {str(e)}",
+                extra={'document_id': document_id, 'user_uid': request.user_uid},
+                request=request,
+                exc_info=True
             )
+            raise
     
+    @log_api_request
     def list(self, request: Request) -> Response:
         """
         List documents for the authenticated user with pagination.
@@ -224,18 +243,21 @@ class DocumentViewSet(viewsets.ModelViewSet):
             return Response(response_data)
             
         except FirestoreError as e:
-            logger.error(f"Failed to list documents from Firestore: {str(e)}")
-            return Response(
-                {'error': 'Failed to retrieve documents', 'detail': str(e)},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            raise DocumentFirestoreError(
+                message="Failed to retrieve documents from Firestore",
+                operation="list_documents",
+                original_error=e
             )
         except Exception as e:
-            logger.error(f"Unexpected error listing documents: {str(e)}")
-            return Response(
-                {'error': 'Internal server error'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            documents_logger.error(
+                f"Unexpected error listing documents: {str(e)}",
+                extra={'user_uid': request.user_uid},
+                request=request,
+                exc_info=True
             )
+            raise
     
+    @log_api_request
     def retrieve(self, request: Request, pk=None) -> Response:
         """
         Retrieve a specific document by ID.
@@ -332,6 +354,7 @@ class DocumentUploadView(APIView):
     permission_classes = [IsDocumentOwner]
     parser_classes = [MultiPartParser, FormParser]
     
+    @log_api_request
     def post(self, request: Request, document_id: str) -> Response:
         """
         Upload and process a document file.
@@ -562,6 +585,7 @@ class DocumentAnalyzeView(APIView):
     permission_classes = [IsDocumentOwner]
     parser_classes = [JSONParser]
     
+    @log_api_request
     def post(self, request: Request, document_id: str) -> Response:
         """
         Perform AI analysis on a document.
@@ -833,6 +857,7 @@ class DocumentDownloadView(APIView):
     authentication_classes = [FirebaseAuthentication]
     permission_classes = [IsDocumentOwner]
     
+    @log_api_request
     def get(self, request: Request, document_id: str) -> Response:
         """
         Generate signed URL for document download.

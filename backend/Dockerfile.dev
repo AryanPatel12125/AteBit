@@ -1,4 +1,4 @@
-# Use Python 3.11.6 exactly as specified
+# Development Dockerfile for Django with auto-reload
 FROM python:3.11.6-slim
 
 # Set working directory
@@ -9,23 +9,33 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=AteBit.settings
 
-# Install system dependencies
+# Install system dependencies including development tools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         postgresql-client \
         gcc \
         python3-dev \
+        git \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
-COPY . .
+# Install development dependencies
+RUN pip install --no-cache-dir \
+    django-extensions \
+    ipython \
+    watchdog
 
 # Expose port
 EXPOSE 8000
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Run development server with auto-reload
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Django's runserver automatically reloads on file changes
+ENTRYPOINT ["docker-entrypoint.sh"]

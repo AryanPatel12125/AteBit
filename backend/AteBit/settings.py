@@ -193,4 +193,150 @@ FIRESTORE_SETTINGS = {
 }
 
 # Google Cloud Storage Configuration
-GCS_BUCKET_NAME = config('GCS_BUCKET_NAME', default=f'{GOOGLE_CLOUD_PROJECT}-documents')
+GCS_BUCKET_NAME = config('GCS_BUCKET', default=f'{GOOGLE_CLOUD_PROJECT}-documents')
+
+# Logging Configuration
+# Simplified for development - use console logging primarily
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {name} {message}',
+                'style': '{',
+            },
+            'simple': {
+                'format': '{levelname} {name}: {message}',
+                'style': '{',
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple'
+            },
+        },
+        'root': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'apps.documents': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'apps.ai_services': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+        }
+    }
+else:
+    # Production logging with files
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {name} {process:d} {thread:d} {message}',
+                'style': '{',
+            },
+            'simple': {
+                'format': '{levelname} {name} {message}',
+                'style': '{',
+            },
+            'json': {
+                'format': '{"level": "{levelname}", "time": "{asctime}", "name": "{name}", "message": "{message}"}',
+                'style': '{',
+            },
+        },
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse',
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple'
+            },
+            'file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': BASE_DIR / 'logs' / 'django.log',
+                'maxBytes': 1024*1024*15,  # 15MB
+                'backupCount': 10,
+                'formatter': 'verbose',
+            },
+            'ai_services_file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': BASE_DIR / 'logs' / 'ai_services.log',
+                'maxBytes': 1024*1024*15,  # 15MB
+                'backupCount': 10,
+                'formatter': 'json',
+            },
+            'documents_file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': BASE_DIR / 'logs' / 'documents.log',
+                'maxBytes': 1024*1024*15,  # 15MB
+                'backupCount': 10,
+                'formatter': 'json',
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            }
+        },
+        'root': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console', 'file', 'mail_admins'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'django.request': {
+                'handlers': ['file', 'mail_admins'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            'apps.documents': {
+                'handlers': ['console', 'documents_file'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'apps.ai_services': {
+                'handlers': ['console', 'ai_services_file'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'google.cloud': {
+                'handlers': ['console', 'file'],
+                'level': 'WARNING',
+                'propagate': False,
+            },
+        }
+    }
+
+# Create logs directory if it doesn't exist (only for production)
+if not DEBUG:
+    LOGS_DIR = BASE_DIR / 'logs'
+    LOGS_DIR.mkdir(exist_ok=True)
+
+# Custom Exception Handler
+REST_FRAMEWORK['EXCEPTION_HANDLER'] = 'apps.documents.exceptions.custom_exception_handler'

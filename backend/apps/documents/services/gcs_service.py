@@ -3,25 +3,32 @@ Google Cloud Storage service for document file operations.
 """
 import logging
 import os
+import time
 from typing import Optional, BinaryIO, Dict, Any
 from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
+from ..logging_utils import services_logger, log_performance, log_storage_operation
+
+logger = logging.getLogger(__name__)
 
 # Import Google Cloud modules only if not in test mode
 if not (getattr(settings, 'TESTING', False) or os.environ.get('TESTING')):
     from google.cloud import storage
     from google.cloud.exceptions import GoogleCloudError
-    import magic
+    try:
+        import magic
+    except ImportError:
+        # Handle missing libmagic dependency gracefully
+        magic = None
+        logger.warning("python-magic not available, MIME type detection will be limited")
 else:
     # Mock for testing
     from unittest.mock import Mock
     storage = Mock()
     GoogleCloudError = Exception
     magic = Mock()
-
-logger = logging.getLogger(__name__)
 
 
 class GCSService:
@@ -94,11 +101,15 @@ class GCSService:
             if file_size == 0:
                 raise GCSError("File is empty")
             
-            # Detect MIME type using python-magic
-            file_content = file_obj.read(2048)  # Read first 2KB for MIME detection
-            file_obj.seek(0)
-            
-            mime_type = magic.from_buffer(file_content, mime=True)
+            # Detect MIME type using python-magic or fallback to content type
+            if magic:
+                file_content = file_obj.read(2048)  # Read first 2KB for MIME detection
+                file_obj.seek(0)
+                mime_type = magic.from_buffer(file_content, mime=True)
+            else:
+                # Fallback to uploaded file content type
+                mime_type = getattr(file_obj, 'content_type', 'application/octet-stream')
+                logger.warning(f"Using fallback MIME type detection: {mime_type}")
             
             # Validate supported file type
             if mime_type not in self.supported_mime_types:
@@ -123,6 +134,7 @@ class GCSService:
             logger.error(f"File validation failed for {filename}: {str(e)}")
             raise GCSError(f"File validation failed: {str(e)}")
     
+    @log_performance("gcs_upload_document")
     def upload_document(
         self,
         file_obj: BinaryIO,
@@ -145,6 +157,7 @@ class GCSService:
         Raises:
             GCSError: If upload fails or file validation fails
         """
+        start_time = time.time()
         try:
             # Validate file first
             validation_result = self._validate_file(file_obj, original_filename)
@@ -171,7 +184,21 @@ class GCSService:
             file_obj.seek(0)
             blob.upload_from_file(file_obj)
             
-            logger.info(f"Successfully uploaded document {document_id} to {storage_path}")
+            duration = time.time() - start_time
+            
+            # Log successful upload
+            log_storage_operation(
+                operation="upload_document",
+                file_path=storage_path,
+                duration=duration,
+                file_size=validation_result['file_size'],
+                extra={
+                    'document_id': document_id,
+                    'owner_uid': owner_uid,
+                    'mime_type': validation_result['mime_type'],
+                    'original_filename': original_filename
+                }
+            )
             
             return {
                 'storage_path': storage_path,
@@ -182,12 +209,32 @@ class GCSService:
             }
             
         except GoogleCloudError as e:
-            logger.error(f"GCS upload failed for document {document_id}: {str(e)}")
+            duration = time.time() - start_time
+            services_logger.error(
+                f"GCS upload failed for document {document_id}: {str(e)}",
+                extra={
+                    'document_id': document_id,
+                    'owner_uid': owner_uid,
+                    'duration_ms': round(duration * 1000, 2),
+                    'error_type': type(e).__name__
+                },
+                exc_info=True
+            )
             raise GCSError(f"Failed to upload document to storage: {str(e)}")
         except Exception as e:
             if isinstance(e, GCSError):
                 raise
-            logger.error(f"Unexpected error during upload for document {document_id}: {str(e)}")
+            duration = time.time() - start_time
+            services_logger.error(
+                f"Unexpected error during upload for document {document_id}: {str(e)}",
+                extra={
+                    'document_id': document_id,
+                    'owner_uid': owner_uid,
+                    'duration_ms': round(duration * 1000, 2),
+                    'error_type': type(e).__name__
+                },
+                exc_info=True
+            )
             raise GCSError(f"Upload failed: {str(e)}")
     
     def upload_extracted_text(

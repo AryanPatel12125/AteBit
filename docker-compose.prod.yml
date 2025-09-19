@@ -1,0 +1,25 @@
+# Production docker-compose configuration
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DEBUG=False
+      - DJANGO_LOG_LEVEL=INFO
+    # Remove development volumes and watch
+    volumes:
+      - backend_static:/app/staticfiles
+    # Remove develop.watch section for production
+    
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    # Remove development volumes and watch
+    volumes: []
+    # Remove develop.watch section for production
