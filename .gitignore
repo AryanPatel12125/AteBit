@@ -28,6 +28,18 @@ __pycache__/
 .Python
 build/
 develop-eggs/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.next/
+.nuxt/
+dist/
+coverage/
+.env.local
+.env.*.local
 dist/
 downloads/
 eggs/
