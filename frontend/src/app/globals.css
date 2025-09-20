@@ -1,0 +1,342 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Roboto", sans-serif;
+  }
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer components {
+  .bg-grid-pattern {
+    background-image: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px
+      ),
+      linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Legal-Tech Design System */
+
+@layer base {
+  :root {
+    /* Core Brand Colors - Professional Legal Tech */
+    --background: 0 0% 100%;
+    --foreground: 210 22% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 22% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 22% 15%;
+
+    /* Professional Navy Primary */
+    --primary: 214 84% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-light: 214 75% 35%;
+    --primary-dark: 214 90% 18%;
+
+    /* Sophisticated Grays */
+    --secondary: 210 15% 96%;
+    --secondary-foreground: 210 22% 15%;
+
+    --muted: 210 15% 95%;
+    --muted-foreground: 210 12% 55%;
+
+    /* Professional Accent */
+    --accent: 212 95% 95%;
+    --accent-foreground: 214 84% 25%;
+
+    /* Trust Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 214 84% 25%;
+
+    --radius: 0.75rem;
+
+    /* Legal Tech Gradients */
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--primary-light)) 100%
+    );
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--primary-dark)) 50%,
+      hsl(214 95% 15%) 100%
+    );
+    --gradient-card: linear-gradient(
+      145deg,
+      hsl(0 0% 100%) 0%,
+      hsl(210 15% 98%) 100%
+    );
+
+    /* Professional Shadows */
+    --shadow-sm: 0 2px 8px hsl(var(--primary) / 0.08);
+    --shadow-md: 0 8px 25px hsl(var(--primary) / 0.12);
+    --shadow-lg: 0 16px 40px hsl(var(--primary) / 0.15);
+    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.2);
+
+    /* Animation Variables */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* Sidebar Variables */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark Mode Colors */
+    --background: 214 25% 8%;
+    --foreground: 210 15% 95%;
+
+    --card: 214 20% 10%;
+    --card-foreground: 210 15% 95%;
+
+    --popover: 214 20% 10%;
+    --popover-foreground: 210 15% 95%;
+
+    --primary: 214 75% 55%;
+    --primary-foreground: 214 25% 8%;
+    --primary-light: 214 65% 65%;
+    --primary-dark: 214 85% 45%;
+
+    --secondary: 214 15% 15%;
+    --secondary-foreground: 210 15% 95%;
+
+    --muted: 214 15% 12%;
+    --muted-foreground: 210 8% 65%;
+
+    --accent: 214 25% 18%;
+    --accent-foreground: 214 75% 55%;
+
+    --success: 142 70% 45%;
+    --warning: 38 85% 55%;
+    --destructive: 0 75% 55%;
+
+    --border: 214 15% 20%;
+    --input: 214 15% 20%;
+    --ring: 214 75% 55%;
+
+    /* Dark Mode Sidebar */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  /* Professional Typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold leading-tight tracking-tight;
+  }
+
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .card-gradient {
+    background: var(--gradient-card);
+  }
+
+  .primary-gradient {
+    background: var(--gradient-primary);
+  }
+
+  .glass {
+    @apply backdrop-blur-md bg-card/80 border border-border/50;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: var(--shadow-md);
+    }
+    to {
+      box-shadow: var(--shadow-glow);
+    }
+  }
+}
+
+/* Component Utilities */
+@layer components {
+  .btn-hero {
+    @apply bg-primary hover:bg-primary-dark text-primary-foreground font-medium px-8 py-4 rounded-lg;
+    @apply shadow-md hover:shadow-lg transition-all duration-300;
+    @apply hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-accent text-foreground border border-border;
+    @apply hover:border-primary/30 transition-colors duration-300;
+  }
+
+  .feature-card {
+    @apply bg-card border border-border rounded-xl p-6;
+    @apply hover:shadow-lg transition-all duration-300;
+    @apply hover:-translate-y-1 hover:border-primary/20;
+  }
+
+  .legal-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

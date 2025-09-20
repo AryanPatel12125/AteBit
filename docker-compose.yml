@@ -1,9 +1,9 @@
 services:
-  # Django Backend Service
+  # Django Backend Service with Development Watch Mode
   backend:
     build: 
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "8000:8000"
     volumes:
@@ -11,28 +11,74 @@ services:
       - backend_static:/app/staticfiles
     environment:
       - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=AteBit.dev_settings
       - DJANGO_SECRET_KEY=django-insecure-docker-dev-key-change-in-production
       - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,backend
-    command: python manage.py runserver 0.0.0.0:8000
+      - PYTHONPATH=/app
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app
+          ignore:
+            - __pycache__/
+            - "*.pyc"
+            - .git/
+            - .pytest_cache/
+            - staticfiles/
+        - action: rebuild
+          path: ./backend/requirements.txt
     restart: unless-stopped
     networks:
       - app-network
 
-  # Next.js Frontend Service  
+  # Next.js Frontend Service with Development Watch Mode
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
+      - frontend_node_modules:/app/node_modules
+    command: npm run dev
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:8000
-    command: npm run dev
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
+      - NEXT_TELEMETRY_DISABLED=1
+      - FAST_REFRESH=true
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
+            - .git/
+            - "*.log"
+            - "**/.next/**"
+            - "**/node_modules/**"
+        - action: rebuild
+          path: ./frontend/package.json
+        - action: rebuild
+          path: ./frontend/package-lock.json
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: unless-stopped
     depends_on:
       - backend
@@ -41,6 +87,7 @@ services:
 
 volumes:
   backend_static:
+  frontend_node_modules:
 
 networks:
   app-network:

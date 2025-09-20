@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     
-    # Local Apps (Placeholder - TODO: Uncomment when apps are created)
-    # "apps.documents",
-    # "apps.ai_services",
+    # Local Apps
+    "apps.documents",
+    "apps.ai_services",
+    "apps.authz",  # Firebase authentication
 ]
 
 MIDDLEWARE = [
@@ -137,11 +138,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'apps.authz.firebase_auth.FirebaseAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # TODO: Add proper authentication
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
@@ -167,22 +176,167 @@ CORS_ALLOWED_HEADERS = [
     'x-requested-with',
 ]
 
-# TODO: Firebase Configuration (Placeholder - not implemented yet)
-# FIREBASE_CONFIG = {
-#     'type': config('FIREBASE_TYPE', default=''),
-#     'project_id': config('FIREBASE_PROJECT_ID', default=''),
-#     'private_key_id': config('FIREBASE_PRIVATE_KEY_ID', default=''),
-#     'private_key': config('FIREBASE_PRIVATE_KEY', default=''),
-#     'client_email': config('FIREBASE_CLIENT_EMAIL', default=''),
-#     'client_id': config('FIREBASE_CLIENT_ID', default=''),
-#     'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
-#     'token_uri': 'https://oauth2.googleapis.com/token',
-# }
+# Import custom AI settings
+from .ai_settings import *
 
-# TODO: Google Cloud AI Configuration (Placeholder - not implemented yet)  
-# GOOGLE_CLOUD_PROJECT = config('GOOGLE_CLOUD_PROJECT', default='')
-# GOOGLE_APPLICATION_CREDENTIALS = config('GOOGLE_APPLICATION_CREDENTIALS', default='')
+# Firebase Configuration
+FIREBASE_CONFIG = {
+    'project_id': config('FIREBASE_PROJECT_ID', default=''),
+    'credentials_path': config('FIREBASE_CREDENTIALS', default=''),
+}
 
-# TODO: AI Services Configuration (Placeholder - not implemented yet)
-# OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
-# LANGCHAIN_API_KEY = config('LANGCHAIN_API_KEY', default='')
+# Firestore Configuration
+FIRESTORE_SETTINGS = {
+    'project_id': GOOGLE_CLOUD_PROJECT,
+    'database_id': config('FIRESTORE_DATABASE_ID', default='(default)'),
+    'collection_prefix': config('FIRESTORE_COLLECTION_PREFIX', default=''),
+}
+
+# Google Cloud Storage Configuration
+GCS_BUCKET_NAME = config('GCS_BUCKET', default=f'{GOOGLE_CLOUD_PROJECT}-documents')
+
+# Logging Configuration
+# Simplified for development - use console logging primarily
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {name} {message}',
+                'style': '{',
+            },
+            'simple': {
+                'format': '{levelname} {name}: {message}',
+                'style': '{',
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple'
+            },
+        },
+        'root': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'apps.documents': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'apps.ai_services': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+        }
+    }
+else:
+    # Production logging with files
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {name} {process:d} {thread:d} {message}',
+                'style': '{',
+            },
+            'simple': {
+                'format': '{levelname} {name} {message}',
+                'style': '{',
+            },
+            'json': {
+                'format': '{"level": "{levelname}", "time": "{asctime}", "name": "{name}", "message": "{message}"}',
+                'style': '{',
+            },
+        },
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse',
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple'
+            },
+            'file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': BASE_DIR / 'logs' / 'django.log',
+                'maxBytes': 1024*1024*15,  # 15MB
+                'backupCount': 10,
+                'formatter': 'verbose',
+            },
+            'ai_services_file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': BASE_DIR / 'logs' / 'ai_services.log',
+                'maxBytes': 1024*1024*15,  # 15MB
+                'backupCount': 10,
+                'formatter': 'json',
+            },
+            'documents_file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': BASE_DIR / 'logs' / 'documents.log',
+                'maxBytes': 1024*1024*15,  # 15MB
+                'backupCount': 10,
+                'formatter': 'json',
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            }
+        },
+        'root': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console', 'file', 'mail_admins'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'django.request': {
+                'handlers': ['file', 'mail_admins'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            'apps.documents': {
+                'handlers': ['console', 'documents_file'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'apps.ai_services': {
+                'handlers': ['console', 'ai_services_file'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'google.cloud': {
+                'handlers': ['console', 'file'],
+                'level': 'WARNING',
+                'propagate': False,
+            },
+        }
+    }
+
+# Create logs directory if it doesn't exist (only for production)
+if not DEBUG:
+    LOGS_DIR = BASE_DIR / 'logs'
+    LOGS_DIR.mkdir(exist_ok=True)
+
+# Custom Exception Handler
+REST_FRAMEWORK['EXCEPTION_HANDLER'] = 'apps.documents.exceptions.custom_exception_handler'
