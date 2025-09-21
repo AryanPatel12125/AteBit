@@ -10,15 +10,30 @@ django-cors-headers==4.3.1
 # Environment variable management
 python-decouple==3.8
 
-# TODO: Add Firebase Admin SDK when ready
-# firebase-admin==6.2.0
+# Firebase Admin SDK for authentication
+firebase-admin==6.2.0
 
-# TODO: Add AI/ML libraries later
-# google-cloud-documentai
-# langchain
-# openai
+# Google Cloud Client Libraries
+google-cloud-storage==2.14.0
+google-cloud-firestore==2.13.1
+google-cloud-aiplatform==1.38.1
 
-# TODO: Add additional dependencies as needed
-# celery
-# redis
-# boto3
+# Authentication and retry logic
+google-auth==2.23.4
+tenacity==8.2.3
+
+# Utilities
+pydantic==2.5.2
+python-jose==3.3.0
+python-magic==0.4.27
+python-dateutil==2.8.2
+
+# Text extraction libraries
+PyPDF2==3.0.1
+python-docx==1.1.0
+chardet==5.2.0
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-mock==3.12.0
