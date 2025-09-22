@@ -15,6 +15,12 @@ services:
       - DJANGO_SECRET_KEY=django-insecure-docker-dev-key-change-in-production
       - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,backend
       - PYTHONPATH=/app
+      - GOOGLE_CLOUD_PROJECT=atebit
+      - GOOGLE_APPLICATION_CREDENTIALS=credentials/service-account-key.json
+      - VERTEX_LOCATION=us-central1
+      - VERTEX_MODEL_ID=gemini-1.5-pro
+    env_file:
+      - ./backend/.env
     develop:
       watch:
         - action: sync

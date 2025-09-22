@@ -1,0 +1,22 @@
+Legal Document Test
+
+This is a simple test document for the AteBit Legal Document AI Platform.
+
+TERMS AND CONDITIONS
+
+1. AGREEMENT
+   This agreement ("Agreement") is entered into between the parties for testing purposes.
+
+2. OBLIGATIONS
+   The user agrees to test the document upload and analysis functionality.
+
+3. LIABILITIES
+   The company shall not be held liable for any damages arising from the use of this test document.
+
+4. TERMINATION
+   This agreement may be terminated at any time by either party.
+
+CONFIDENTIALITY CLAUSE
+All information contained herein is confidential and proprietary.
+
+END OF DOCUMENT

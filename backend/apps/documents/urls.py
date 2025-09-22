@@ -52,6 +52,16 @@ urlpatterns = [
     path('<uuid:document_id>/analysis/<int:version>/', 
          views.DocumentAnalysisHistoryView.as_view(), 
          name='document-analysis-version'),
+    
+    # Simple upload endpoint for frontend testing
+    path('simple-upload/', 
+         views.SimpleDocumentUploadView.as_view(), 
+         name='simple-upload'),
+    
+    # Test upload endpoint (plain Django - no DRF authentication)
+    path('simple-upload-test/', 
+         views.simple_upload_test, 
+         name='simple-upload-test'),
 ]
 
 # URL pattern names for reference:

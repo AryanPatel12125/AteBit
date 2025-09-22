@@ -141,7 +141,7 @@ class TextExtractor:
     
     def _extract_from_pdf(self, file_content: bytes) -> Tuple[str, Dict]:
         """
-        Extract text from PDF file.
+        Extract text from PDF file with multiple fallback methods.
         
         Args:
             file_content: PDF file bytes
@@ -149,41 +149,113 @@ class TextExtractor:
         Returns:
             Tuple of (extracted_text, metadata)
         """
+        # Try PyPDF2 first
         try:
-            pdf_file = BytesIO(file_content)
-            pdf_reader = PdfReader(pdf_file)
+            return self._extract_pdf_pypdf2(file_content)
+        except Exception as e:
+            logger.warning(f"PyPDF2 extraction failed: {str(e)}, trying fallback methods...")
             
-            if len(pdf_reader.pages) == 0:
-                raise TextExtractionError("PDF file contains no pages")
+            # Fallback: Try basic text extraction
+            try:
+                return self._extract_pdf_fallback(file_content)
+            except Exception as fallback_error:
+                logger.error(f"All PDF extraction methods failed. PyPDF2: {str(e)}, Fallback: {str(fallback_error)}")
+                raise TextExtractionError(f"Failed to extract text from PDF using all available methods")
+    
+    def _extract_pdf_pypdf2(self, file_content: bytes) -> Tuple[str, Dict]:
+        """Extract PDF text using PyPDF2."""
+        pdf_file = BytesIO(file_content)
+        pdf_reader = PdfReader(pdf_file)
+        
+        if len(pdf_reader.pages) == 0:
+            raise TextExtractionError("PDF file contains no pages")
+        
+        text_parts = []
+        for page_num, page in enumerate(pdf_reader.pages):
+            try:
+                page_text = page.extract_text()
+                if page_text.strip():
+                    text_parts.append(page_text)
+            except Exception as e:
+                logger.warning(f"Failed to extract text from PDF page {page_num + 1}: {str(e)}")
+                continue
+        
+        if not text_parts:
+            raise TextExtractionError("No text could be extracted from PDF using PyPDF2")
+        
+        extracted_text = '\n\n'.join(text_parts)
+        
+        # Safely extract metadata
+        metadata = {
+            'page_count': len(pdf_reader.pages),
+            'pages_with_text': len(text_parts),
+            'pdf_metadata': {},
+            'extraction_method': 'PyPDF2'
+        }
+        
+        # Try to get PDF metadata safely
+        try:
+            if pdf_reader.metadata:
+                # Handle different PyPDF2 versions
+                if hasattr(pdf_reader.metadata, '_get_object'):
+                    metadata['pdf_metadata'] = pdf_reader.metadata._get_object()
+                elif hasattr(pdf_reader.metadata, '__dict__'):
+                    metadata['pdf_metadata'] = dict(pdf_reader.metadata.__dict__)
+                else:
+                    # Fallback for newer versions
+                    metadata['pdf_metadata'] = {
+                        'title': getattr(pdf_reader.metadata, 'title', None),
+                        'author': getattr(pdf_reader.metadata, 'author', None),
+                        'creator': getattr(pdf_reader.metadata, 'creator', None),
+                        'producer': getattr(pdf_reader.metadata, 'producer', None),
+                        'subject': getattr(pdf_reader.metadata, 'subject', None),
+                    }
+        except Exception as meta_error:
+            logger.warning(f"Could not extract PDF metadata: {meta_error}")
+            metadata['pdf_metadata'] = {'error': 'metadata_extraction_failed'}
+        
+        return extracted_text, metadata
+    
+    def _extract_pdf_fallback(self, file_content: bytes) -> Tuple[str, Dict]:
+        """Fallback PDF extraction method."""
+        # Simple approach: try to find text patterns in the raw PDF content
+        try:
+            # Convert bytes to string, looking for readable text
+            text_content = file_content.decode('utf-8', errors='ignore')
             
-            text_parts = []
-            for page_num, page in enumerate(pdf_reader.pages):
-                try:
-                    page_text = page.extract_text()
-                    if page_text.strip():
-                        text_parts.append(page_text)
-                except Exception as e:
-                    logger.warning(f"Failed to extract text from PDF page {page_num + 1}: {str(e)}")
-                    continue
+            # Basic cleanup to extract readable text from PDF structure
+            import re
             
-            if not text_parts:
-                raise TextExtractionError("No text could be extracted from PDF")
+            # Remove PDF structure elements
+            text_content = re.sub(r'%PDF.*?%%EOF', '', text_content, flags=re.DOTALL)
+            text_content = re.sub(r'obj.*?endobj', '', text_content, flags=re.DOTALL)
+            text_content = re.sub(r'stream.*?endstream', '', text_content, flags=re.DOTALL)
             
-            extracted_text = '\n\n'.join(text_parts)
+            # Extract words and sentences
+            words = re.findall(r'[A-Za-z][A-Za-z\s]{2,}', text_content)
+            
+            if not words:
+                raise TextExtractionError("No readable text found in PDF using fallback method")
+            
+            # Join words with spaces and clean up
+            extracted_text = ' '.join(words)
+            extracted_text = re.sub(r'\s+', ' ', extracted_text).strip()
+            
+            if len(extracted_text) < 10:
+                raise TextExtractionError("Insufficient text extracted using fallback method")
             
             metadata = {
-                'page_count': len(pdf_reader.pages),
-                'pages_with_text': len(text_parts),
-                'pdf_metadata': pdf_reader.metadata._get_object() if pdf_reader.metadata else {}
+                'page_count': 'unknown',
+                'pages_with_text': 'unknown',
+                'pdf_metadata': {'extraction_method': 'fallback_text_pattern'},
+                'extraction_method': 'fallback'
             }
             
+            logger.info(f"Fallback PDF extraction successful: {len(extracted_text)} characters")
             return extracted_text, metadata
             
         except Exception as e:
-            if isinstance(e, TextExtractionError):
-                raise
-            logger.error(f"PDF extraction error: {str(e)}")
-            raise TextExtractionError(f"Failed to extract text from PDF: {str(e)}")
+            raise TextExtractionError(f"Fallback PDF extraction failed: {str(e)}")
     
     def _extract_from_docx(self, file_content: bytes) -> Tuple[str, Dict]:
         """

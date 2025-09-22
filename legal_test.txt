@@ -1,0 +1,22 @@
+﻿LEGAL DOCUMENT ANALYSIS TEST
+
+This is a sample legal contract for testing purposes.
+
+PARTIES:
+1. Company ABC (the 'Company')
+2. John Doe (the 'Client')
+
+TERMS AND CONDITIONS:
+- The Client agrees to pay ,000 for services
+- Payment is due within 30 days
+- Breach of contract may result in legal action
+- This contract is governed by state law
+
+RISKS:
+- Late payment penalties apply
+- No warranty is provided
+- Limitation of liability clause included
+
+SIGNATURES:
+Company ABC: ________________
+John Doe: ________________

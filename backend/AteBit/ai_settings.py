@@ -6,27 +6,34 @@ import os
 from typing import Dict, Any
 from decouple import config
 
-# Google Cloud Project Settings
-GOOGLE_CLOUD_PROJECT = config('GOOGLE_CLOUD_PROJECT', default='')
-GOOGLE_APPLICATION_CREDENTIALS = config('GOOGLE_APPLICATION_CREDENTIALS', 
-                                     default=os.getenv('GOOGLE_APPLICATION_CREDENTIALS', ''))
+# FORCE LOAD HARDCODED GCP SETTINGS - INSECURE BUT WORKS
+print("🔥 FORCE LOADING GCP CREDENTIALS - INSECURE MODE")
+
+# Google Cloud Project Settings - HARDCODED
+GOOGLE_CLOUD_PROJECT = 'atebit'
+GOOGLE_APPLICATION_CREDENTIALS = 'credentials/service-account-key.json'
+
+# Force set environment variables
+os.environ['GOOGLE_CLOUD_PROJECT'] = 'atebit'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'credentials/service-account-key.json')
+
+print(f"🚀 FORCED GCP PROJECT: {GOOGLE_CLOUD_PROJECT}")
+print(f"🔑 FORCED CREDENTIALS PATH: {os.environ['GOOGLE_APPLICATION_CREDENTIALS']}")
+print(f"📁 CREDENTIALS EXIST: {os.path.exists(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])}")
 
 # Validate credentials on startup
-if GOOGLE_CLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS:
-    credentials_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), GOOGLE_APPLICATION_CREDENTIALS)
-    if not os.path.exists(credentials_path):
-        print(f"WARNING: Credential file not found at {credentials_path}")
-        print("Please ensure service-account-key.json is in backend/credentials/")
+credentials_path = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
+if os.path.exists(credentials_path):
+    print("✅ CREDENTIALS FILE FOUND - GCP INTEGRATION ACTIVE")
 else:
-    print("WARNING: GCP credentials not configured. Some features may not work.")
-    print("Please check your .env file and credential setup.")
+    print(f"❌ CREDENTIAL FILE NOT FOUND AT: {credentials_path}")
 
-# Vertex AI Settings
+# Vertex AI Settings - HARDCODED
 VERTEX_SETTINGS = {
-    'location': config('VERTEX_LOCATION', default='us-central1'),
-    'model_id': config('VERTEX_MODEL_ID', default='gemini-1.0-pro'),
-    'max_output_tokens': config('VERTEX_MAX_OUTPUT_TOKENS', default=1024, cast=int),
-    'temperature': config('VERTEX_TEMPERATURE', default=0.2, cast=float),
+    'location': 'us-central1',
+    'model_id': 'gemini-1.5-pro',
+    'max_output_tokens': 2048,
+    'temperature': 0.2,
     'safety_settings': {
         'HARM_CATEGORY_HATE_SPEECH': 'BLOCK_HIGH',
         'HARM_CATEGORY_SEXUALLY_EXPLICIT': 'BLOCK_HIGH',
@@ -35,16 +42,16 @@ VERTEX_SETTINGS = {
     }
 }
 
-# Firebase Settings
+# Firebase Settings - HARDCODED
 FIREBASE_SETTINGS = {
-    'project_id': config('FIREBASE_PROJECT_ID', default=''),
-    'credentials_path': config('FIREBASE_CREDENTIALS', default=''),
+    'project_id': 'atebit',
+    'credentials_path': 'credentials/service-account-key.json',
 }
 
-# Google Cloud Storage Settings
+# Google Cloud Storage Settings - HARDCODED
 GCS_SETTINGS = {
-    'bucket': config('GCS_BUCKET', default=''),
-    'report_expiry_seconds': config('GCS_REPORT_EXPIRY_SECONDS', default=3600, cast=int),
+    'bucket': 'atebit-documents',
+    'report_expiry_seconds': 3600,
 }
 
 # Default prompt settings

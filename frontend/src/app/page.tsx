@@ -19,7 +19,11 @@ export default function Home() {
   const router = useRouter();
 
   const handleGetStarted = () => {
-    router.push("/dashboard");
+    router.push("/demo/document-upload");
+  };
+
+  const handleTryDemo = () => {
+    router.push("/demo/document-upload");
   };
 
   const services = [
@@ -101,17 +105,17 @@ export default function Home() {
                   onClick={handleGetStarted}
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-3xl text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 group"
                 >
-                  Get Started Free
+                  Try Document Analysis
                   <ArrowRight
                     size={20}
                     className="group-hover:translate-x-1 transition-transform"
                   />
                 </button>
                 <button
-                  onClick={() => window.open("#how-it-works", "_self")}
-                  className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200"
+                  onClick={handleTryDemo}
+                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200"
                 >
-                  Watch Demo
+                  Live Demo
                 </button>
               </div>
             </div>
